@@ -12,19 +12,19 @@
     <meta name="twitter:title" content="Epic Moments">
     <meta name="twitter:description" content="Create and manage QR codes for your Vimeo videos with augmented reality experience">
     <title>Epic Moments</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+    <script src="https://cdn.tailwindcss.com" crossorigin></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js" crossorigin></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js" crossorigin></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" crossorigin></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="styles/main.css" rel="stylesheet">
-    <link href="styles/auth.css" rel="stylesheet">
-    <link href="styles/dashboard.css" rel="stylesheet">
-    <link href="styles/scanner.css" rel="stylesheet">
+    <link href="./styles/main.css" rel="stylesheet">
+    <link href="./styles/auth.css" rel="stylesheet">
+    <link href="./styles/dashboard.css" rel="stylesheet">
+    <link href="./styles/scanner.css" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -37,28 +37,50 @@
                 }
             }
         }
+        
+        // Função para capturar erros
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('Erro:', message, 'em', source, 'linha:', lineno);
+            document.getElementById('root').innerHTML = '<div style="text-align:center; padding:20px;"><h2>Houve um erro ao carregar a aplicação</h2><p>Por favor, verifique o console para mais detalhes.</p></div>';
+            return false;
+        };
     </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel" src="components/Navbar.js"></script>
-    <script type="text/babel" src="components/Footer.js"></script>
-    <script type="text/babel" src="components/Button.js"></script>
-    <script type="text/babel" src="components/Input.js"></script>
-    <script type="text/babel" src="components/QRCodeGenerator.js"></script>
-    <script type="text/babel" src="components/VideoPlayer.js"></script>
-    <script type="text/babel" src="components/Stats.js"></script>
-    <script type="text/babel" src="components/ARCamera.js"></script>
-    <script type="text/babel" src="components/QRScanner.js"></script>
-    <script type="text/babel" src="pages/Home.js"></script>
-    <script type="text/babel" src="pages/Login.js"></script>
-    <script type="text/babel" src="pages/Register.js"></script>
-    <script type="text/babel" src="pages/Dashboard.js"></script>
-    <script type="text/babel" src="pages/VideoView.js"></script>
-    <script type="text/babel" src="pages/Upload.js"></script>
-    <script type="text/babel" src="pages/Scanner.js"></script>
-    <script type="text/babel" src="utils/auth.js"></script>
-    <script type="text/babel" src="utils/api.js"></script>
-    <script type="text/babel" src="app.js"></script>
+    <script type="text/babel" src="./components/Navbar.js"></script>
+    <script type="text/babel" src="./components/Footer.js"></script>
+    <script type="text/babel" src="./components/Button.js"></script>
+    <script type="text/babel" src="./components/Input.js"></script>
+    <script type="text/babel" src="./components/QRCodeGenerator.js"></script>
+    <script type="text/babel" src="./components/VideoPlayer.js"></script>
+    <script type="text/babel" src="./components/Stats.js"></script>
+    <script type="text/babel" src="./components/ARCamera.js"></script>
+    <script type="text/babel" src="./components/QRScanner.js"></script>
+    <script type="text/babel" src="./pages/Home.js"></script>
+    <script type="text/babel" src="./pages/Login.js"></script>
+    <script type="text/babel" src="./pages/Register.js"></script>
+    <script type="text/babel" src="./pages/Dashboard.js"></script>
+    <script type="text/babel" src="./pages/VideoView.js"></script>
+    <script type="text/babel" src="./pages/Upload.js"></script>
+    <script type="text/babel" src="./pages/Scanner.js"></script>
+    <script type="text/babel" src="./utils/auth.js"></script>
+    <script type="text/babel" src="./utils/api.js"></script>
+    <script type="text/babel" src="./app.js"></script>
+    
+    <!-- Fallback para caso o React não carregue -->
+    <script>
+        setTimeout(function() {
+            if (document.getElementById('root').children.length === 0) {
+                document.getElementById('root').innerHTML = `
+                    <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+                        <h1>Epic Moments</h1>
+                        <p>Carregando aplicação...</p>
+                        <p>Se esta mensagem persistir, verifique o console do navegador para mais detalhes.</p>
+                    </div>
+                `;
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
