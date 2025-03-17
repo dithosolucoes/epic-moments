@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Epic Moments - Create and manage QR codes for your Vimeo videos with augmented reality experience">
+    <meta name="keywords" content="QR code, video, vimeo, augmented reality, web AR, video sharing">
+    <meta property="og:title" content="Epic Moments">
+    <meta property="og:description" content="Create and manage QR codes for your Vimeo videos with augmented reality experience">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Epic Moments">
+    <meta name="twitter:description" content="Create and manage QR codes for your Vimeo videos with augmented reality experience">
+    <title>Epic Moments</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/auth.css" rel="stylesheet">
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="styles/scanner.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5FD3D4',
+                        secondary: '#1A1A1A',
+                        light: '#F5F5F5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="components/Navbar.js"></script>
+    <script type="text/babel" src="components/Footer.js"></script>
+    <script type="text/babel" src="components/Button.js"></script>
+    <script type="text/babel" src="components/Input.js"></script>
+    <script type="text/babel" src="components/QRCodeGenerator.js"></script>
+    <script type="text/babel" src="components/VideoPlayer.js"></script>
+    <script type="text/babel" src="components/Stats.js"></script>
+    <script type="text/babel" src="components/ARCamera.js"></script>
+    <script type="text/babel" src="components/QRScanner.js"></script>
+    <script type="text/babel" src="pages/Home.js"></script>
+    <script type="text/babel" src="pages/Login.js"></script>
+    <script type="text/babel" src="pages/Register.js"></script>
+    <script type="text/babel" src="pages/Dashboard.js"></script>
+    <script type="text/babel" src="pages/VideoView.js"></script>
+    <script type="text/babel" src="pages/Upload.js"></script>
+    <script type="text/babel" src="pages/Scanner.js"></script>
+    <script type="text/babel" src="utils/auth.js"></script>
+    <script type="text/babel" src="utils/api.js"></script>
+    <script type="text/babel" src="app.js"></script>
+</body>
+</html>
