@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Epic Moments - Create and manage QR codes for your Vimeo videos with augmented reality experience">
-    <meta name="keywords" content="QR code, video, vimeo, augmented reality, web AR, video sharing">
-    <meta property="og:title" content="Epic Moments">
-    <meta property="og:description" content="Create and manage QR codes for your Vimeo videos with augmented reality experience">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Epic Moments">
-    <meta name="twitter:description" content="Create and manage QR codes for your Vimeo videos with augmented reality experience">
     <title>Epic Moments</title>
+    
+    <!-- Estilos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/auth.css" rel="stylesheet">
+    <link href="styles/dashboard.css" rel="stylesheet">
+    <link href="styles/scanner.css" rel="stylesheet">
+    
+    <!-- Scripts externos -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
@@ -20,11 +21,8 @@
     <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js" crossorigin></script>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js" crossorigin></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" crossorigin></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link href="./styles/main.css" rel="stylesheet">
-    <link href="./styles/auth.css" rel="stylesheet">
-    <link href="./styles/dashboard.css" rel="stylesheet">
-    <link href="./styles/scanner.css" rel="stylesheet">
+    
+    <!-- Configuração do Tailwind -->
     <script>
         tailwind.config = {
             theme: {
@@ -37,50 +35,623 @@
                 }
             }
         }
-        
-        // Função para capturar erros
-        window.onerror = function(message, source, lineno, colno, error) {
-            console.error('Erro:', message, 'em', source, 'linha:', lineno);
-            document.getElementById('root').innerHTML = '<div style="text-align:center; padding:20px;"><h2>Houve um erro ao carregar a aplicação</h2><p>Por favor, verifique o console para mais detalhes.</p></div>';
-            return false;
-        };
     </script>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel" src="./components/Navbar.js"></script>
-    <script type="text/babel" src="./components/Footer.js"></script>
-    <script type="text/babel" src="./components/Button.js"></script>
-    <script type="text/babel" src="./components/Input.js"></script>
-    <script type="text/babel" src="./components/QRCodeGenerator.js"></script>
-    <script type="text/babel" src="./components/VideoPlayer.js"></script>
-    <script type="text/babel" src="./components/Stats.js"></script>
-    <script type="text/babel" src="./components/ARCamera.js"></script>
-    <script type="text/babel" src="./components/QRScanner.js"></script>
-    <script type="text/babel" src="./pages/Home.js"></script>
-    <script type="text/babel" src="./pages/Login.js"></script>
-    <script type="text/babel" src="./pages/Register.js"></script>
-    <script type="text/babel" src="./pages/Dashboard.js"></script>
-    <script type="text/babel" src="./pages/VideoView.js"></script>
-    <script type="text/babel" src="./pages/Upload.js"></script>
-    <script type="text/babel" src="./pages/Scanner.js"></script>
-    <script type="text/babel" src="./utils/auth.js"></script>
-    <script type="text/babel" src="./utils/api.js"></script>
-    <script type="text/babel" src="./app.js"></script>
-    
-    <!-- Fallback para caso o React não carregue -->
-    <script>
-        setTimeout(function() {
-            if (document.getElementById('root').children.length === 0) {
-                document.getElementById('root').innerHTML = `
-                    <div style="text-align: center; padding: 50px; font-family: sans-serif;">
-                        <h1>Epic Moments</h1>
-                        <p>Carregando aplicação...</p>
-                        <p>Se esta mensagem persistir, verifique o console do navegador para mais detalhes.</p>
+    <!-- Conteúdo inicial enquanto o React carrega -->
+    <div id="root">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; font-family: Arial, sans-serif;">
+            <h1 style="font-size: 2rem; margin-bottom: 1rem; color: #5FD3D4;">Epic Moments</h1>
+            <p style="margin-bottom: 0.5rem;">Carregando aplicação...</p>
+            <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #5FD3D4; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Componentes React -->
+    <script type="text/babel">
+        // Componentes
+        function Button({ children, onClick, variant = "primary", className = "", ...props }) {
+            const baseClasses = "px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+            const variantClasses = {
+                primary: "bg-primary text-white hover:bg-opacity-90 focus:ring-primary",
+                secondary: "bg-secondary text-white hover:bg-opacity-90 focus:ring-secondary",
+                outline: "bg-transparent border border-primary text-primary hover:bg-primary hover:bg-opacity-10 focus:ring-primary"
+            };
+            
+            return (
+                <button 
+                    className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+                    onClick={onClick}
+                    {...props}
+                >
+                    {children}
+                </button>
+            );
+        }
+
+        function Input({ label, type = "text", value, onChange, error, ...props }) {
+            return (
+                <div className="mb-4">
+                    {label && (
+                        <label className="block text-gray-700 text-sm font-medium mb-1">
+                            {label}
+                        </label>
+                    )}
+                    <input
+                        type={type}
+                        value={value}
+                        onChange={onChange}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                            error ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                        {...props}
+                    />
+                    {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+                </div>
+            );
+        }
+
+        function Navbar() {
+            const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+            const isLoggedIn = window.isAuthenticated ? window.isAuthenticated() : false;
+            
+            return (
+                <nav className="bg-secondary text-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between h-16">
+                            <div className="flex items-center">
+                                <a href="/" className="flex-shrink-0 flex items-center">
+                                    <span className="text-primary font-bold text-xl">Epic Moments</span>
+                                </a>
+                            </div>
+                            
+                            <div className="hidden md:flex items-center space-x-4">
+                                <a href="/" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                    Home
+                                </a>
+                                
+                                {isLoggedIn ? (
+                                    <>
+                                        <a href="/dashboard" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                            Dashboard
+                                        </a>
+                                        <a href="/scan" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                            Scan QR
+                                        </a>
+                                        <button 
+                                            onClick={() => {
+                                                window.logout();
+                                                window.location.href = '/';
+                                            }}
+                                            className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700"
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <a href="/login" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                            Login
+                                        </a>
+                                        <a href="/register" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">
+                                            Register
+                                        </a>
+                                    </>
+                                )}
+                            </div>
+                            
+                            <div className="flex md:hidden items-center">
+                                <button 
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-gray-700 focus:outline-none"
+                                >
+                                    <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                `;
+                    
+                    {isMenuOpen && (
+                        <div className="md:hidden">
+                            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                                <a href="/" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">
+                                    Home
+                                </a>
+                                
+                                {isLoggedIn ? (
+                                    <>
+                                        <a href="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">
+                                            Dashboard
+                                        </a>
+                                        <a href="/scan" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">
+                                            Scan QR
+                                        </a>
+                                        <button 
+                                            onClick={() => {
+                                                window.logout();
+                                                window.location.href = '/';
+                                            }}
+                                            className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700"
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <a href="/login" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">
+                                            Login
+                                        </a>
+                                        <a href="/register" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">
+                                            Register
+                                        </a>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </nav>
+            );
+        }
+
+        function Footer() {
+            return (
+                <footer className="bg-secondary text-white py-8">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div>
+                                <h3 className="text-lg font-semibold mb-4">Epic Moments</h3>
+                                <p className="text-sm text-gray-300">
+                                    Create and share augmented reality experiences with QR codes linked to your Vimeo videos.
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+                                <ul className="space-y-2">
+                                    <li>
+                                        <a href="/" className="text-sm text-gray-300 hover:text-white">
+                                            Home
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/login" className="text-sm text-gray-300 hover:text-white">
+                                            Login
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/register" className="text-sm text-gray-300 hover:text-white">
+                                            Register
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h3 className="text-lg font-semibold mb-4">Contact</h3>
+                                <ul className="space-y-2">
+                                    <li className="flex items-center text-sm text-gray-300">
+                                        <i className="fas fa-envelope mr-2"></i>
+                                        support@epicmoments.com
+                                    </li>
+                                    <li className="flex items-center text-sm text-gray-300">
+                                        <i className="fas fa-phone mr-2"></i>
+                                        +1 (555) 123-4567
+                                    </li>
+                                </ul>
+                                <div className="mt-4 flex space-x-4">
+                                    <a href="#" className="text-gray-300 hover:text-white">
+                                        <i className="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" className="text-gray-300 hover:text-white">
+                                        <i className="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" className="text-gray-300 hover:text-white">
+                                        <i className="fab fa-instagram"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-300">
+                            <p>&copy; {new Date().getFullYear()} Epic Moments. All rights reserved.</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        function Home() {
+            return (
+                <div className="min-h-screen flex flex-col">
+                    <Navbar />
+                    
+                    <main className="flex-grow">
+                        <section className="bg-secondary text-white py-20">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                                <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                                    Transform Your Videos with <span className="text-primary">Augmented Reality</span>
+                                </h1>
+                                <p className="text-xl max-w-3xl mx-auto mb-8">
+                                    Create QR codes that bring your Vimeo videos to life with immersive AR experiences.
+                                </p>
+                                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                    <a href="/register">
+                                        <Button>Get Started</Button>
+                                    </a>
+                                    <a href="/scan">
+                                        <Button variant="outline">Try Demo</Button>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section className="py-16">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div className="text-center">
+                                        <div className="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i className="fas fa-upload text-2xl"></i>
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">Upload</h3>
+                                        <p className="text-gray-600">
+                                            Connect your Vimeo account and select the videos you want to enhance.
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="text-center">
+                                        <div className="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i className="fas fa-qrcode text-2xl"></i>
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">Generate</h3>
+                                        <p className="text-gray-600">
+                                            Create custom QR codes linked to your videos with our easy-to-use tools.
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="text-center">
+                                        <div className="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i className="fas fa-mobile-alt text-2xl"></i>
+                                        </div>
+                                        <h3 className="text-xl font-semibold mb-2">Experience</h3>
+                                        <p className="text-gray-600">
+                                            Scan the QR code to view your video in an immersive augmented reality environment.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                    
+                    <Footer />
+                </div>
+            );
+        }
+
+        // Função para simular autenticação
+        window.isAuthenticated = function() {
+            return localStorage.getItem('auth_token') !== null;
+        };
+
+        window.login = function(email, password) {
+            // Simulação de login
+            localStorage.setItem('auth_token', 'demo_token');
+            localStorage.setItem('user_email', email);
+            return Promise.resolve({ success: true });
+        };
+
+        window.logout = function() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_email');
+        };
+
+        // Renderização principal
+        function App() {
+            const [path, setPath] = React.useState(window.location.pathname);
+            
+            React.useEffect(() => {
+                const handlePopState = () => {
+                    setPath(window.location.pathname);
+                };
+                
+                window.addEventListener('popstate', handlePopState);
+                
+                return () => {
+                    window.removeEventListener('popstate', handlePopState);
+                };
+            }, []);
+            
+            // Função para navegar entre páginas
+            window.navigate = function(to) {
+                window.history.pushState({}, '', to);
+                setPath(to);
+            };
+            
+            // Roteamento simples
+            let component;
+            switch(path) {
+                case '/login':
+                    component = (
+                        <div className="min-h-screen flex flex-col">
+                            <Navbar />
+                            <main className="flex-grow flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                                <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
+                                    <div>
+                                        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                                            Sign in to your account
+                                        </h2>
+                                    </div>
+                                    <form className="mt-8 space-y-6" onSubmit={(e) => {
+                                        e.preventDefault();
+                                        const email = e.target.email.value;
+                                        const password = e.target.password.value;
+                                        
+                                        window.login(email, password)
+                                            .then(() => {
+                                                window.navigate('/dashboard');
+                                            });
+                                    }}>
+                                        <div>
+                                            <Input 
+                                                id="email"
+                                                name="email"
+                                                type="email"
+                                                autoComplete="email"
+                                                required
+                                                label="Email address"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Input 
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                autoComplete="current-password"
+                                                required
+                                                label="Password"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Button type="submit" className="w-full">
+                                                Sign in
+                                            </Button>
+                                        </div>
+                                    </form>
+                                    <div className="text-center mt-4">
+                                        <p className="text-sm text-gray-600">
+                                            Don't have an account?{' '}
+                                            <a href="/register" className="font-medium text-primary hover:text-primary-dark">
+                                                Register
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </main>
+                            <Footer />
+                        </div>
+                    );
+                    break;
+                case '/register':
+                    component = (
+                        <div className="min-h-screen flex flex-col">
+                            <Navbar />
+                            <main className="flex-grow flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                                <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
+                                    <div>
+                                        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                                            Create your account
+                                        </h2>
+                                    </div>
+                                    <form className="mt-8 space-y-6" onSubmit={(e) => {
+                                        e.preventDefault();
+                                        const email = e.target.email.value;
+                                        const password = e.target.password.value;
+                                        
+                                        window.login(email, password)
+                                            .then(() => {
+                                                window.navigate('/dashboard');
+                                            });
+                                    }}>
+                                        <div>
+                                            <Input 
+                                                id="name"
+                                                name="name"
+                                                type="text"
+                                                autoComplete="name"
+                                                required
+                                                label="Full name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Input 
+                                                id="email"
+                                                name="email"
+                                                type="email"
+                                                autoComplete="email"
+                                                required
+                                                label="Email address"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Input 
+                                                id="password"
+                                                name="password"
+                                                type="password"
+                                                autoComplete="new-password"
+                                                required
+                                                label="Password"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Button type="submit" className="w-full">
+                                                Register
+                                            </Button>
+                                        </div>
+                                    </form>
+                                    <div className="text-center mt-4">
+                                        <p className="text-sm text-gray-600">
+                                            Already have an account?{' '}
+                                            <a href="/login" className="font-medium text-primary hover:text-primary-dark">
+                                                Sign in
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </main>
+                            <Footer />
+                        </div>
+                    );
+                    break;
+                case '/dashboard':
+                    if (!window.isAuthenticated()) {
+                        window.navigate('/login');
+                        return null;
+                    }
+                    component = (
+                        <div className="min-h-screen flex flex-col">
+                            <Navbar />
+                            <main className="flex-grow p-6">
+                                <div className="max-w-7xl mx-auto">
+                                    <div className="flex justify-between items-center mb-8">
+                                        <h1 className="text-3xl font-bold">Your Videos</h1>
+                                        <Button onClick={() => window.navigate('/upload')}>
+                                            <i className="fas fa-plus mr-2"></i>
+                                            Add New Video
+                                        </Button>
+                                    </div>
+                                    
+                                    <div className="bg-white rounded-lg shadow p-6 mb-8">
+                                        <h2 className="text-xl font-semibold mb-4">Statistics</h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div className="bg-gray-50 p-4 rounded-lg">
+                                                <div className="flex items-center">
+                                                    <div className="bg-primary bg-opacity-20 p-3 rounded-full mr-4">
+                                                        <i className="fas fa-film text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-500 text-sm">Total Videos</p>
+                                                        <p className="text-2xl font-bold">3</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-gray-50 p-4 rounded-lg">
+                                                <div className="flex items-center">
+                                                    <div className="bg-primary bg-opacity-20 p-3 rounded-full mr-4">
+                                                        <i className="fas fa-eye text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-500 text-sm">Total Views</p>
+                                                        <p className="text-2xl font-bold">128</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-gray-50 p-4 rounded-lg">
+                                                <div className="flex items-center">
+                                                    <div className="bg-primary bg-opacity-20 p-3 rounded-full mr-4">
+                                                        <i className="fas fa-qrcode text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-500 text-sm">QR Scans</p>
+                                                        <p className="text-2xl font-bold">42</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {/* Exemplo de vídeo */}
+                                        <div className="bg-white rounded-lg shadow overflow-hidden">
+                                            <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                                                <div className="flex items-center justify-center h-full">
+                                                    <i className="fas fa-play-circle text-4xl text-gray-400"></i>
+                                                </div>
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="font-semibold mb-2">Product Demo</h3>
+                                                <p className="text-gray-600 text-sm mb-4">A brief demonstration of our latest product features.</p>
+                                                <div className="flex justify-between items-center">
+                                                    <Button variant="outline" className="text-sm">
+                                                        <i className="fas fa-qrcode mr-2"></i>
+                                                        Show QR
+                                                    </Button>
+                                                    <span className="text-gray-500 text-sm">
+                                                        <i className="fas fa-eye mr-1"></i>
+                                                        42 views
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Exemplo de vídeo */}
+                                        <div className="bg-white rounded-lg shadow overflow-hidden">
+                                            <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                                                <div className="flex items-center justify-center h-full">
+                                                    <i className="fas fa-play-circle text-4xl text-gray-400"></i>
+                                                </div>
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="font-semibold mb-2">Tutorial Video</h3>
+                                                <p className="text-gray-600 text-sm mb-4">Learn how to use our platform in 5 minutes.</p>
+                                                <div className="flex justify-between items-center">
+                                                    <Button variant="outline" className="text-sm">
+                                                        <i className="fas fa-qrcode mr-2"></i>
+                                                        Show QR
+                                                    </Button>
+                                                    <span className="text-gray-500 text-sm">
+                                                        <i className="fas fa-eye mr-1"></i>
+                                                        56 views
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Exemplo de vídeo */}
+                                        <div className="bg-white rounded-lg shadow overflow-hidden">
+                                            <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                                                <div className="flex items-center justify-center h-full">
+                                                    <i className="fas fa-play-circle text-4xl text-gray-400"></i>
+                                                </div>
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="font-semibold mb-2">Company Event</h3>
+                                                <p className="text-gray-600 text-sm mb-4">Highlights from our annual conference.</p>
+                                                <div className="flex justify-between items-center">
+                                                    <Button variant="outline" className="text-sm">
+                                                        <i className="fas fa-qrcode mr-2"></i>
+                                                        Show QR
+                                                    </Button>
+                                                    <span className="text-gray-500 text-sm">
+                                                        <i className="fas fa-eye mr-1"></i>
+                                                        30 views
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </main>
+                            <Footer />
+                        </div>
+                    );
+                    break;
+                default:
+                    component = <Home />;
             }
-        }, 2000);
+            
+            return component;
+        }
+
+        // Renderizar a aplicação
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
